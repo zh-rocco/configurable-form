@@ -41,6 +41,7 @@ module.exports = {
         multiline: 'never',
       },
     ],
+    'vue/singleline-html-element-content-newline': 'off',
   },
   parserOptions: {
     parser: '@typescript-eslint/parser',
