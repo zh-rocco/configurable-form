@@ -46,6 +46,32 @@ import { CreateElement } from 'vue/types';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import CodeMirror from './components/CodeMirror';
 import ConfigurableForm from './components/ConfigurableForm';
+import { transform } from './utils/parser';
+
+const test = `function test() {
+  const name = 'test function';
+  console.log(name);
+}`;
+
+const config = `{
+  component: 'el-col',
+  options: {
+    span: 2,
+    style: 'text-align: center;',
+  },
+  children: [
+    {
+      component: {
+        render(h) {
+          return h('span', undefined, '-');
+        },
+      },
+    },
+  ],
+}`;
+
+window.console.log(transform(test));
+window.console.log(new Function(`return ${config}`)()); // eslint-disable-line
 
 @Component({
   components: {
