@@ -4,6 +4,5 @@ export function transform(script: string) {
     // plugins: [],
     comments: false,
   }).code;
-  script = `(function(exports){var module={};module.exports=exports;${script};return module.exports.__esModule?module.exports.default:module.exports;})({})`;
-  return new Function(`return ${script}`)(); // eslint-disable-line
+  return new Function(`return ${script.replace(`"use strict";`, '').trim()}`)(); // eslint-disable-line
 }
