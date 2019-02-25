@@ -12,7 +12,7 @@ const DEFAULT_OPTIONS = {
   theme: 'solarized',
   tabSize: 2,
   spellcheck: true,
-  readOnly: true,
+  // readOnly: true,
 };
 
 @Component
