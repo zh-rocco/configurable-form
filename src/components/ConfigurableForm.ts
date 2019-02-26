@@ -1,4 +1,9 @@
-import { CreateElement, VNode } from 'vue/types';
+import {
+  ComponentOptions,
+  VueConstructor,
+  CreateElement,
+  VNode,
+} from 'vue/types';
 import { cloneDeep, isFunction, pickBy } from 'lodash';
 import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
 
@@ -10,18 +15,21 @@ export interface FormModel extends CommonObject {}
 export interface FormOptions extends CommonObject {}
 export interface formEvents extends CommonObject {}
 export interface ChildComponent extends CommonObject {
-  component?: any;
+  component?:
+    | string
+    | ComponentOptions<never, any, any, any, any, Record<string, any>>
+    | VueConstructor<Vue>;
   options: CommonObject;
   children: ChildComponent[];
-  data?: any;
-  transform?: Function;
-  show?: Function;
+  data?: any[] | Promise<any>;
+  transform?(data: any): object[];
+  show?(vm: Vue): boolean;
 }
 export interface Action {
   name: string;
   options?: CommonObject;
   events: CommonObject;
-  show?: Function;
+  show?(vm: Vue): boolean;
 }
 export interface PropsOptions extends CommonObject {}
 
@@ -71,25 +79,31 @@ export default class ConfigurableForm extends Vue {
     return this.$refs.form as Vue;
   }
 
-  private fetchAsyncData() {
-    // for (const item of this.formItems) {
-    //   const {
-    //     options: { prop },
-    //     children: { data, transform },
-    //   } = item;
-    //   if (!prop || !isFunction(data)) {
-    //     continue;
-    //   }
-    //   this.$set(this.asyncData, prop, []);
-    //   setTimeout(async () => {
-    //     let res = await data();
-    //     this.asyncData[prop] = isFunction(transform) ? transform(res) : res;
-    //   });
-    // }
+  private collectAsyncData(components: ChildComponent[]) {
+    for (const component of components) {
+      if (Array.isArray(component.children)) {
+        this.collectAsyncData(component.children);
+      } else {
+        const { __prop__, data, transform } = component;
+
+        if (!__prop__ || !isFunction(data)) {
+          continue;
+        }
+
+        this.$set(this.asyncData, __prop__ as string, []);
+
+        setTimeout(async () => {
+          const res = await data();
+          this.asyncData[__prop__ as string] = isFunction(transform)
+            ? transform(res)
+            : res;
+        });
+      }
+    }
   }
 
   private created() {
-    this.fetchAsyncData();
+    this.collectAsyncData(this.formItems);
   }
 
   private render(h: CreateElement) {
