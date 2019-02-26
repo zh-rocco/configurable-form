@@ -26,7 +26,6 @@ export default class CodeMirror extends Vue {
   private editor: any = undefined;
 
   private handleChange() {
-    console.log('code mirror change');
     this.$emit('change', this.editor.getValue());
   }
 
@@ -44,6 +43,6 @@ export default class CodeMirror extends Vue {
   private mounted() {
     this.currentOptions = Object.assign({}, DEFAULT_OPTIONS, this.options);
     this.editor = CM.fromTextArea(this.$refs.textarea, this.currentOptions);
-    this.editor.on('change', debounce(this.handleChange, 1000));
+    this.editor.on('change', debounce(this.handleChange, 300));
   }
 }

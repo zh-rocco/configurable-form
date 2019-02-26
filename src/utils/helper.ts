@@ -22,7 +22,7 @@ export function stringify(input: object, space: number = 2): string {
 export function parse(input: string): object {
   return JSON.parse(input, (k, v) => {
     if (isFunctionStr(v)) {
-      return new Function(`return ${v}`)();
+      return new Function(`return ${v}`)(); // eslint-disable-line
     }
     return v;
   });
