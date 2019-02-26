@@ -3,7 +3,6 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 
 module.exports = {
   publicPath: IS_PROD ? `/${name}/` : '/',
-  outputDir: 'docs',
   productionSourceMap: false,
   configureWebpack: {
     optimization: {
