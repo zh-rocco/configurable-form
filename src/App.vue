@@ -90,7 +90,7 @@ export default class App extends Vue {
         this.show = true;
       });
     } catch (error) {
-      console.error('JSON parse error:', error);
+      console.error('JSON parse error:', error); // eslint-disable-line
     }
   }
 }
