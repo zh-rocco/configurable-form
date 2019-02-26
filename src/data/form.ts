@@ -1,9 +1,17 @@
-export default `() => ({
+export default `{
+  formOptions: {
+    labelWidth: '80px',
+  },
+
   formItems: [
     {
       options: {
         prop: 'name',
         label: '活动名称',
+        rules: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
+        ],
       },
       children: [
         {
@@ -15,6 +23,9 @@ export default `() => ({
       options: {
         prop: 'region',
         label: '活动区域',
+        rules: [
+          { required: true, message: '请选择活动区域', trigger: 'change' },
+        ],
       },
       children: [
         {
@@ -56,6 +67,14 @@ export default `() => ({
               component: 'el-form-item',
               options: {
                 prop: 'date1',
+                rules: [
+                  {
+                    type: 'date',
+                    required: true,
+                    message: '请选择日期',
+                    trigger: 'change',
+                  },
+                ],
               },
               children: [
                 {
@@ -96,6 +115,14 @@ export default `() => ({
               component: 'el-form-item',
               options: {
                 prop: 'date2',
+                rules: [
+                  {
+                    type: 'date',
+                    required: true,
+                    message: '请选择时间',
+                    trigger: 'change',
+                  },
+                ],
               },
               children: [
                 {
@@ -127,6 +154,14 @@ export default `() => ({
       options: {
         prop: 'type',
         label: '活动性质',
+        rules: [
+          {
+            type: 'array',
+            required: true,
+            message: '请至少选择一个活动性质',
+            trigger: 'change',
+          },
+        ],
       },
       children: [
         {
@@ -165,6 +200,9 @@ export default `() => ({
       options: {
         prop: 'resource',
         label: '特殊资源',
+        rules: [
+          { required: true, message: '请选择活动资源', trigger: 'change' },
+        ],
       },
       children: [
         {
@@ -191,6 +229,7 @@ export default `() => ({
       options: {
         prop: 'desc',
         label: '活动形式',
+        rules: [{ required: true, message: '请填写活动形式', trigger: 'blur' }],
       },
       children: [
         {
@@ -231,45 +270,4 @@ export default `() => ({
       },
     },
   ],
-
-  formOptions: {
-    labelWidth: '80px',
-    rules: {
-      name: [
-        { required: true, message: '请输入活动名称', trigger: 'blur' },
-        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
-      ],
-      region: [
-        { required: true, message: '请选择活动区域', trigger: 'change' },
-      ],
-      date1: [
-        {
-          type: 'date',
-          required: true,
-          message: '请选择日期',
-          trigger: 'change',
-        },
-      ],
-      date2: [
-        {
-          type: 'date',
-          required: true,
-          message: '请选择时间',
-          trigger: 'change',
-        },
-      ],
-      type: [
-        {
-          type: 'array',
-          required: true,
-          message: '请至少选择一个活动性质',
-          trigger: 'change',
-        },
-      ],
-      resource: [
-        { required: true, message: '请选择活动资源', trigger: 'change' },
-      ],
-      desc: [{ required: true, message: '请填写活动形式', trigger: 'blur' }],
-    },
-  },
-})`;
+}`;
