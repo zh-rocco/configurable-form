@@ -64,7 +64,7 @@ export default class ConfigurableForm extends Vue {
 
   private get localFormOptions(): object {
     return Object.assign({}, this.formOptions, {
-      model: this.value,
+      model: this.value || {},
     });
   }
   private get formInstance(): Vue {
@@ -94,7 +94,7 @@ export default class ConfigurableForm extends Vue {
 
   private render(h: CreateElement) {
     const { value: model } = this;
-    const formItems = renderComponents(h, this.formItems, this);
+    const formItems = renderComponents(h, this.formItems || [], this);
 
     // 按钮
     if (!this.searchOnChange) {
@@ -102,7 +102,7 @@ export default class ConfigurableForm extends Vue {
         h(
           'el-form-item',
           {},
-          this.actions.map((action) => {
+          (this.actions || []).map((action) => {
             return h(
               'el-button',
               {
@@ -132,7 +132,7 @@ export default class ConfigurableForm extends Vue {
       {
         class: 'base-form',
         props: this.localFormOptions,
-        on: this.formEvents,
+        on: this.formEvents || {},
         ref: 'form',
       },
       formItems,
@@ -149,7 +149,7 @@ function renderComponents(
     .filter(({ show }) => !isFunction(show) || show(vm))
     .map((component: ChildComponent) => {
       const { value: model } = vm;
-      const { options = {}, children, __prop__ } = component;
+      const { options = {}, children = [], __prop__ } = component;
       const { prop } = options;
       let defaultOptions = null;
 
