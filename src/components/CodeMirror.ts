@@ -4,15 +4,14 @@ import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import CM from 'codemirror';
 import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/solarized.css';
+import 'codemirror/theme/idea.css';
 
 const DEFAULT_OPTIONS = {
   lineNumbers: true,
   mode: 'javascript',
-  theme: 'solarized',
+  theme: 'idea',
   tabSize: 2,
   spellcheck: true,
-  // readOnly: true,
 };
 
 @Component

@@ -18,50 +18,30 @@
       </a>
     </el-header>
     <el-main>
-      <el-row :gutter="20">
-        <el-col :span="12"
-                class="editor">
-          <div class="scroller">
-            <CodeMirror :value="code"
-                        @change="handleCodeMirrorChange" />
-          </div>
-        </el-col>
-        <el-col :span="12"
-                class="previewer">
-          <div class="scroller">
-            <el-row v-if="show">
-              <ConfigurableForm ref="baseForm"
-                                v-model="formModel"
-                                style="width: 100%;"
-                                :form-options="config.formOptions"
-                                :form-events="config.formEvents"
-                                :form-items="config.formItems"
-                                :actions="config.formActions" />
-            </el-row>
-          </div>
-        </el-col>
-      </el-row>
+      <el-tabs v-model="activeName"
+               @tab-click="handleClick">
+        <el-tab-pane label="典型表单"
+                     name="basic" />
+        <el-tab-pane label="表单校验"
+                     name="validation" />
+
+        <Playground v-if="code"
+                    :code="code"
+                    :value="formModel" />
+      </el-tabs>
     </el-main>
   </el-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import CodeMirror from './components/CodeMirror';
-import ConfigurableForm from './components/ConfigurableForm';
-import { transform } from './utils/parser';
-import formConfig from './data/form';
-
-function wrap(input: string): string {
-  return `() => (${input})`;
-}
-
-const config = wrap(formConfig).toString();
+import Playground from './components/Playground';
+import basicCode from './data/basic';
+import validationCode from './data/validation';
 
 @Component({
   components: {
-    CodeMirror,
-    ConfigurableForm,
+    Playground,
   },
 })
 export default class App extends Vue {
@@ -75,23 +55,16 @@ export default class App extends Vue {
     resource: '',
     type: [],
   };
-  private show: boolean = true;
-  private config: object = transform(config)();
 
-  private get code() {
-    return config;
-  }
+  private activeName: string = 'basic';
+  private code = basicCode;
+  private codes: any = {
+    basic: basicCode,
+    validation: validationCode,
+  };
 
-  private handleCodeMirrorChange(val: string) {
-    try {
-      this.show = false;
-      this.$nextTick(() => {
-        this.config = transform(val)();
-        this.show = true;
-      });
-    } catch (error) {
-      console.error('JSON parse error:', error); // eslint-disable-line
-    }
+  private handleClick() {
+    this.code = this.codes[this.activeName] || null;
   }
 }
 </script>
@@ -102,17 +75,13 @@ h1 {
   margin: 0;
 }
 
+body {
+}
+
 .el-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.el-row {
-  display: flex;
-  max-height: calc(100vh - 100px);
-  justify-content: space-around;
-  align-items: stretch;
 }
 
 .title {
@@ -156,9 +125,31 @@ h1 {
   line-height: 1;
 }
 
-.scroller {
-  height: 100%;
+.playground {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  max-height: calc(100vh - 155px);
+}
+
+.code-mirror,
+.configurable-form {
+  box-sizing: border-box;
+  flex: 0 1 auto;
+  width: 50%;
+  border: 1px solid #ebebeb;
+  border-radius: 2px;
+  font-size: 12px;
   overflow-y: auto;
+}
+
+.code-mirror {
+  margin-right: 10px;
+}
+
+.configurable-form {
+  margin-left: 10px;
+  padding: 5px;
 }
 
 .CodeMirror {
