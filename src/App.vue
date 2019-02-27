@@ -137,19 +137,18 @@ body {
   box-sizing: border-box;
   flex: 0 1 auto;
   width: 50%;
-  border: 1px solid #ebebeb;
-  border-radius: 2px;
   font-size: 12px;
   overflow-y: auto;
 }
 
 .code-mirror {
   margin-right: 10px;
+  border: 1px solid #ebebeb;
+  border-radius: 2px;
 }
 
 .configurable-form {
   margin-left: 10px;
-  padding: 5px;
 }
 
 .CodeMirror {
