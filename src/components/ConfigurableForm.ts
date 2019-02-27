@@ -29,7 +29,7 @@ export interface ChildComponent extends CommonObject {
   transform?(data: any): object[];
   show?(vm: Vue): boolean;
 }
-export interface Action {
+export interface FormAction {
   name: string;
   options?: CommonObject;
   events: CommonObject;
@@ -55,7 +55,7 @@ export default class ConfigurableForm extends Vue {
   @Prop({ type: Array, default: () => ({}) })
   private formItems!: ChildComponent[];
   @Prop({ type: Array, default: () => [] })
-  private actions!: Action[];
+  private formActions!: FormAction[];
   @Prop({ type: Boolean, default: false })
   private searchOnChange!: boolean;
 
@@ -107,7 +107,7 @@ export default class ConfigurableForm extends Vue {
         h(
           'el-form-item',
           undefined,
-          (this.actions || []).map((action) => {
+          (this.formActions || []).map((action) => {
             return h(
               'el-button',
               {
