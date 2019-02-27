@@ -1,5 +1,6 @@
 export default `{
   formOptions: {
+    size: 'small',
     labelWidth: '80px',
   },
 
@@ -80,9 +81,14 @@ export default `{
                 {
                   component: 'el-date-picker',
                   options: {
-                    type: 'date',
-                    placeholder: '选择日期',
-                    style: 'width: 100%;',
+                    __is_vnode_data__: true,
+                    props: {
+                      type: 'date',
+                      placeholder: '选择日期',
+                    },
+                    style: {
+                      width: '100%',
+                    },
                   },
                 },
               ],
@@ -92,8 +98,13 @@ export default `{
         {
           component: 'el-col',
           options: {
-            span: 2,
-            style: 'text-align: center;',
+            __is_vnode_data__: true,
+            props: {
+              span: 2,
+            },
+            style: {
+              textAlign: 'center',
+            },
           },
           children: [
             {
@@ -128,9 +139,14 @@ export default `{
                 {
                   component: 'el-time-picker',
                   options: {
-                    type: 'fixed-time',
-                    placeholder: '选择时间',
-                    style: 'width: 100%;',
+                    __is_vnode_data__: true,
+                    props: {
+                      type: 'fixed-time',
+                      placeholder: '选择时间',
+                    },
+                    style: {
+                      width: '100%',
+                    },
                   },
                 },
               ],

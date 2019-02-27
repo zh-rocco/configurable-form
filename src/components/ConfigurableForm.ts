@@ -3,8 +3,9 @@ import {
   VueConstructor,
   CreateElement,
   VNode,
+  VNodeData,
 } from 'vue/types';
-import { cloneDeep, isFunction, pickBy } from 'lodash';
+import { cloneDeep, isFunction } from 'lodash';
 import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
 
 // TODO: 优化类型声明
@@ -14,12 +15,15 @@ export interface CommonObject {
 export interface FormModel extends CommonObject {}
 export interface FormOptions extends CommonObject {}
 export interface formEvents extends CommonObject {}
+export interface componentOptions extends VNodeData {
+  __is_vnode_data__?: boolean;
+}
 export interface ChildComponent extends CommonObject {
   component?:
     | string
     | ComponentOptions<never, any, any, any, any, Record<string, any>>
     | VueConstructor<Vue>;
-  options: CommonObject;
+  options: CommonObject | componentOptions;
   children: ChildComponent[];
   data?: any[] | Promise<any>;
   transform?(data: any): object[];
@@ -32,19 +36,6 @@ export interface Action {
   show?(vm: Vue): boolean;
 }
 export interface PropsOptions extends CommonObject {}
-
-const HTML_ATTRS: string[] = ['style'];
-
-/**
- * 提取原生 HTML 标签属性
- *
- * @export
- * @param {object} options 组件 props 对象
- * @returns {object}
- */
-function pickAttrs(options: PropsOptions) {
-  return pickBy(options, (v, k: string) => HTML_ATTRS.includes(k));
-}
 
 @Component
 export default class ConfigurableForm extends Vue {
@@ -84,17 +75,17 @@ export default class ConfigurableForm extends Vue {
       if (Array.isArray(component.children)) {
         this.collectAsyncData(component.children);
       } else {
-        const { __prop__, data, transform } = component;
+        const { __prop_name__, data, transform } = component;
 
-        if (!__prop__ || !isFunction(data)) {
+        if (!__prop_name__ || !isFunction(data)) {
           continue;
         }
 
-        this.$set(this.asyncData, __prop__ as string, []);
+        this.$set(this.asyncData, __prop_name__ as string, []);
 
         setTimeout(async () => {
           const res = await data();
-          this.asyncData[__prop__ as string] = isFunction(transform)
+          this.asyncData[__prop_name__ as string] = isFunction(transform)
             ? transform(res)
             : res;
         });
@@ -115,7 +106,7 @@ export default class ConfigurableForm extends Vue {
       formItems.push(
         h(
           'el-form-item',
-          {},
+          undefined,
           (this.actions || []).map((action) => {
             return h(
               'el-button',
@@ -163,30 +154,28 @@ function renderComponents(
     .filter(({ show }) => !isFunction(show) || show(vm))
     .map((component: ChildComponent) => {
       const { value: model } = vm;
-      const { options = {}, children = [], __prop__ } = component;
-      const { prop } = options;
+      const { options = {}, children = [], __prop_name__ } = component;
+      const { prop, __is_vnode_data__ } = options;
       let defaultOptions = null;
 
       if (prop) {
         vm.$set(model, prop, model[prop] === undefined ? null : model[prop]);
-        children.forEach((child) => (child.__prop__ = prop));
+        children.forEach((child) => (child.__prop_name__ = prop));
       }
 
-      if (__prop__) {
-        defaultOptions = {
-          props: Object.assign({}, component.options, {
-            value: model[__prop__],
-          }),
-          attrs: pickAttrs(component.options),
-          on: {
-            input: (val: any) => (model[__prop__] = val),
-          },
-        };
+      if (__is_vnode_data__) {
+        defaultOptions = cloneDeep(options);
       } else {
-        defaultOptions = {
-          props: component.options,
-          attrs: pickAttrs(component.options),
-        };
+        defaultOptions = { props: cloneDeep(options) };
+      }
+
+      if (__prop_name__) {
+        defaultOptions.props = Object.assign(defaultOptions.props || {}, {
+          value: model[__prop_name__],
+        });
+        defaultOptions.on = Object.assign(defaultOptions.on || {}, {
+          input: (val: any) => (model[__prop_name__] = val),
+        });
       }
 
       return h(
