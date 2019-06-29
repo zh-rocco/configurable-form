@@ -1,5 +1,7 @@
 # configurable-form
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/zh-rocco/configurable-form.svg)](https://greenkeeper.io/)
+
 > Configurable form implementation, use element-ui.
 
 ## Project setup
