@@ -11,7 +11,7 @@
     "@types/lodash": "^4.14.121",
     "codemirror": "^5.44.0",
     "element-ui": "^2.5.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "vue": "^2.6.6",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0"
